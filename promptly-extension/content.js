@@ -1,11 +1,12 @@
 /**
  * Promptly - Floating "Improve" button for AI chat inputs
+ * Always visible on all pages
  */
 (function() {
   'use strict';
 
   const API_URL = 'http://localhost:3001/improve-prompt';
-  const MIN_TEXT_LENGTH = 10;
+  const MIN_TEXT_LENGTH = 3;
 
   let floatingBtn = null;
   let activeInput = null;
@@ -17,6 +18,7 @@
     floatingBtn = document.createElement('div');
     floatingBtn.id = 'promptly-floating-btn';
     floatingBtn.innerHTML = `<span class="promptly-icon">✨</span><span class="promptly-text">Improve</span>`;
+    floatingBtn.style.display = 'flex';
     document.body.appendChild(floatingBtn);
 
     floatingBtn.addEventListener('click', handleImprove);
@@ -49,29 +51,15 @@
     }
   }
 
-  function positionButton(input) {
-    if (!floatingBtn || !input) return;
-
-    const rect = input.getBoundingClientRect();
-    const btnHeight = 36;
-
-    let top = rect.top + window.scrollY - btnHeight - 8;
-    let left = rect.left + window.scrollX;
-
-    if (top < window.scrollY + 10) {
-      top = rect.bottom + window.scrollY + 8;
-    }
-    if (left < 10) left = 10;
-
-    floatingBtn.style.top = top + 'px';
-    floatingBtn.style.left = left + 'px';
+  function positionButtonFixed() {
+    if (!floatingBtn) return;
+    floatingBtn.style.position = 'fixed';
+    floatingBtn.style.bottom = '20px';
+    floatingBtn.style.right = '20px';
+    floatingBtn.style.top = 'auto';
+    floatingBtn.style.left = 'auto';
     floatingBtn.style.display = 'flex';
-  }
-
-  function hideButton() {
-    if (floatingBtn && !isProcessing) {
-      floatingBtn.style.display = 'none';
-    }
+    floatingBtn.style.zIndex = '2147483647';
   }
 
   function getInputValue(el) {
@@ -97,15 +85,10 @@
 
     // Contenteditable
     el.focus();
-    
-    // Clear existing content
     el.innerHTML = '';
-    
-    // Create a text node with the value
     const textNode = document.createTextNode(value);
     el.appendChild(textNode);
     
-    // Move cursor to end
     const range = document.createRange();
     const sel = window.getSelection();
     range.selectNodeContents(el);
@@ -113,7 +96,6 @@
     sel.removeAllRanges();
     sel.addRange(range);
 
-    // Trigger input event
     el.dispatchEvent(new InputEvent('input', { bubbles: true, cancelable: true, inputType: 'insertText', data: value }));
   }
 
@@ -121,10 +103,24 @@
     e.preventDefault();
     e.stopPropagation();
 
-    if (!activeInput || isProcessing) return;
+    if (isProcessing) return;
 
+    // Find the active input
+    const input = findChatInput();
+    if (!input) {
+      setButtonState('error');
+      setTimeout(() => setButtonState('idle'), 1500);
+      return;
+    }
+
+    activeInput = input;
     const prompt = getInputValue(activeInput).trim();
-    if (!prompt || prompt.length < MIN_TEXT_LENGTH) return;
+    
+    if (!prompt || prompt.length < MIN_TEXT_LENGTH) {
+      setButtonState('error');
+      setTimeout(() => setButtonState('idle'), 1500);
+      return;
+    }
 
     isProcessing = true;
     setButtonState('loading');
@@ -145,7 +141,7 @@
         setButtonState('success');
         setTimeout(() => {
           isProcessing = false;
-          hideButton();
+          setButtonState('idle');
         }, 1500);
       } else {
         throw new Error(data.error || 'No response');
@@ -194,55 +190,11 @@
     return null;
   }
 
-  function checkAndShowButton() {
-    const input = findChatInput();
-    if (!input) return;
-
-    const value = getInputValue(input).trim();
-    if (value.length >= MIN_TEXT_LENGTH) {
-      activeInput = input;
-      createFloatingButton();
-      setButtonState('idle');
-      positionButton(input);
-    } else {
-      hideButton();
-    }
-  }
-
   function init() {
     createFloatingButton();
-    floatingBtn.style.display = 'none';
-
-    // Check periodically for input changes
-    setInterval(checkAndShowButton, 500);
-
-    // Also listen to input events
-    document.addEventListener('input', (e) => {
-      setTimeout(checkAndShowButton, 100);
-    }, true);
-
-    document.addEventListener('focus', (e) => {
-      setTimeout(checkAndShowButton, 100);
-    }, true);
-
-    document.addEventListener('click', (e) => {
-      setTimeout(checkAndShowButton, 100);
-    }, true);
-
-    // Reposition on scroll/resize
-    window.addEventListener('scroll', () => {
-      if (activeInput && floatingBtn.style.display !== 'none') {
-        positionButton(activeInput);
-      }
-    }, true);
-
-    window.addEventListener('resize', () => {
-      if (activeInput && floatingBtn.style.display !== 'none') {
-        positionButton(activeInput);
-      }
-    });
-
-    console.log('[Promptly] Extension loaded');
+    positionButtonFixed();
+    setButtonState('idle');
+    console.log('[Promptly] Extension loaded - always visible');
   }
 
   if (document.readyState === 'loading') {

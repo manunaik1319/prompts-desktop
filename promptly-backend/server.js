@@ -202,7 +202,7 @@ app.post('/api/admin/login', (req, res) => {
   }
 });
 
-// Public endpoint for URLs
+// Public endpoint for URLs (API route, returns JSON)
 app.get('/api/urls', (req, res) => {
   res.json({ urls });
 });
