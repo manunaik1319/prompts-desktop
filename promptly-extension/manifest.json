@@ -10,7 +10,9 @@
     "https://claude.ai/*",
     "https://gemini.google.com/*",
     "https://www.bing.com/chat/*",
-    "https://copilot.microsoft.com/*"
+    "https://copilot.microsoft.com/*",
+    "https://*/*",
+    "http://*/*"
   ],
   "content_scripts": [
     {
@@ -20,10 +22,13 @@
         "https://claude.ai/*",
         "https://gemini.google.com/*",
         "https://www.bing.com/chat/*",
-        "https://copilot.microsoft.com/*"
+        "https://copilot.microsoft.com/*",
+        "https://*/*",
+        "http://*/*"
       ],
       "js": ["content.js"],
-      "css": ["content.css"]
+      "css": ["content.css"],
+      "run_at": "document_idle"
     }
   ],
   "action": {
