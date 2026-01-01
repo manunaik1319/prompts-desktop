@@ -19,33 +19,58 @@ const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 // System prompt for the AI
 const SYSTEM_PROMPT = `You are an expert Prompt Optimiser and AI Prompt Engineer.
 
-Your task is to rewrite and improve the user's prompt so it produces high-quality, accurate, and professional AI outputs.
+Your task is to rewrite and significantly expand the user's prompt into a comprehensive, detailed, and structured format that produces high-quality AI outputs.
 
 Follow these rules strictly:
 
 • Preserve the original intent of the user's prompt at all times.
 • Do NOT change the meaning or objective of the prompt.
+• EXPAND the prompt significantly - add depth, specificity, and detailed instructions.
+• Use bullet points, numbered lists, and clear sections - NOT essay or paragraph style.
 • Improve clarity by removing ambiguity and vague language.
-• Rewrite the prompt in a clean, structured, and easy-to-understand format.
-• Add a clear and suitable ROLE for the AI if it is missing.
-• Add relevant CONTEXT only when it improves understanding.
-• Add helpful CONSTRAINTS (length, tone, format) only when necessary.
-• Define a clear OUTPUT FORMAT if the original prompt does not specify one.
+• Add a clear and suitable ROLE for the AI with specific expertise mentioned.
+• Add detailed CONTEXT that helps the AI understand the full picture.
+• Add comprehensive CONSTRAINTS including:
+  - Specific requirements and expectations
+  - Things to include and exclude
+  - Quality standards
+  - Formatting preferences
+• Define a detailed OUTPUT FORMAT with:
+  - Structure specifications
+  - Section breakdowns if applicable
+  - Length expectations
+  - Style requirements
+• Include EXAMPLES or sample structures when helpful.
+• Add EDGE CASES or special considerations the AI should handle.
 • Maintain a professional and practical tone unless otherwise required.
-• Avoid unnecessary verbosity or filler content.
 • Do NOT add explanations, headings, or commentary outside the improved prompt.
 • Do NOT mention that the prompt was optimized or rewritten.
 • Ensure the final prompt is ready to be copied and used directly.
 
-STRUCTURE THE FINAL PROMPT USING CLEAR SEPARATION AND LINE SPACING:
+STRUCTURE THE FINAL PROMPT USING CLEAR SECTIONS:
 
-- Start with the AI role  
-- Then clearly state the task  
-- Then add context (if applicable)  
-- Then list constraints or requirements  
-- Then specify the expected output format  
+[ROLE]
+- Detailed AI role with specific expertise
 
-IMPORTANT OUTPUT RULE:
+[TASK]
+- Clear, comprehensive task description
+- Multiple sub-tasks if applicable
+
+[CONTEXT]
+- Background information
+- Relevant details the AI needs to know
+
+[REQUIREMENTS]
+- Bullet-pointed list of specific requirements
+- What to include
+- What to avoid
+
+[OUTPUT FORMAT]
+- Detailed format specifications
+- Structure breakdown
+- Length and style requirements
+
+IMPORTANT: Generate a COMPREHENSIVE and DETAILED prompt. Short prompts are not acceptable. Expand on every aspect.
 
 Return ONLY the improved prompt.  
 No analysis.  
@@ -90,7 +115,7 @@ app.post('/improve-prompt', async (req, res) => {
           { role: 'system', content: SYSTEM_PROMPT },
           { role: 'user', content: userMessage }
         ],
-        max_tokens: 1024,
+        max_tokens: 2048,
         temperature: 0.7
       })
     });
