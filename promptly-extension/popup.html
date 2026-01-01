@@ -2,41 +2,64 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=400">
+  <meta name="viewport" content="width=420">
   <title>Promptly</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
   <div class="container">
     <header>
-      <h1>✨ Promptly</h1>
-      <p class="subtitle">Improve your AI prompts</p>
+      <div class="logo">
+        <div class="logo-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="white"/>
+          </svg>
+        </div>
+        <h1>Promptly</h1>
+      </div>
+      <p class="subtitle">Transform your prompts into professional queries</p>
+      <span class="badge">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+        AI-Powered
+      </span>
     </header>
 
     <div class="input-section">
       <label for="prompt-input">Your Prompt</label>
       <textarea 
         id="prompt-input" 
-        placeholder="Paste your prompt here..."
+        placeholder="Enter your rough prompt here..."
         rows="5"
       ></textarea>
     </div>
 
     <div class="tone-section">
-      <label for="tone-select">Select Tone</label>
+      <label for="tone-select">Writing Style</label>
       <select id="tone-select">
         <option value="Professional">Professional</option>
         <option value="Creative">Creative</option>
-        <option value="Short & Direct">Short & Direct</option>
+        <option value="Short & Direct">Concise</option>
+        <option value="Technical">Technical</option>
+        <option value="Friendly">Friendly</option>
       </select>
     </div>
 
     <button id="improve-btn" class="improve-btn">
-      <span class="btn-text">✨ Improve Prompt</span>
+      <span class="btn-text">Improve Prompt</span>
       <span class="btn-loading" style="display: none;">
         <span class="spinner"></span> Processing...
       </span>
     </button>
+
+    <div class="shortcut-hint">
+      <span>Quick access:</span>
+      <kbd>Ctrl</kbd> + <kbd>I</kbd>
+    </div>
 
     <div id="error-message" class="error-message" style="display: none;"></div>
 
@@ -48,15 +71,18 @@
         rows="6"
       ></textarea>
       <button id="copy-btn" class="copy-btn">
-        <span id="copy-text">📋 Copy to Clipboard</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+        </svg>
+        <span id="copy-text">Copy to Clipboard</span>
       </button>
-      </div>
-      
-      <footer style="margin-top: 20px; text-align: center; border-top: 1px solid #eee; padding-top: 15px;">
-        <a href="about.html" style="color: #666; text-decoration: none; font-size: 13px;">About & Founder Info</a>
-      </footer>
     </div>
-
+      
+    <footer>
+      <a href="about.html">About Promptly</a>
+    </footer>
+  </div>
 
   <script src="popup.js"></script>
 </body>

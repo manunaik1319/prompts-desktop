@@ -17,7 +17,7 @@
 
     floatingBtn = document.createElement('div');
     floatingBtn.id = 'promptly-floating-btn';
-    floatingBtn.innerHTML = `<span class="promptly-icon">✨</span><span class="promptly-text">Improve</span>`;
+    floatingBtn.innerHTML = `<svg class="promptly-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg><span class="promptly-text">Improve</span>`;
     floatingBtn.style.display = 'flex';
     document.body.appendChild(floatingBtn);
 
@@ -34,20 +34,20 @@
 
     switch (state) {
       case 'idle':
-        floatingBtn.innerHTML = `<span class="promptly-icon">✨</span><span class="promptly-text">Improve</span>`;
+        floatingBtn.innerHTML = `<svg class="promptly-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg><span class="promptly-text">Improve</span>`;
         break;
       case 'loading':
         floatingBtn.classList.add('promptly-loading');
         floatingBtn.innerHTML = `<span class="promptly-spinner"></span><span class="promptly-text">Improving...</span>`;
         break;
-      case 'success':
-        floatingBtn.classList.add('promptly-success');
-        floatingBtn.innerHTML = `<span class="promptly-icon">✅</span><span class="promptly-text">Done!</span>`;
-        break;
-      case 'error':
-        floatingBtn.classList.add('promptly-error');
-        floatingBtn.innerHTML = `<span class="promptly-icon">⚠️</span><span class="promptly-text">Error</span>`;
-        break;
+        case 'success':
+          floatingBtn.classList.add('promptly-success');
+          floatingBtn.innerHTML = `<svg class="promptly-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg><span class="promptly-text">Done!</span>`;
+          break;
+        case 'error':
+          floatingBtn.classList.add('promptly-error');
+          floatingBtn.innerHTML = `<svg class="promptly-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg><span class="promptly-text">Error</span>`;
+          break;
     }
   }
 
