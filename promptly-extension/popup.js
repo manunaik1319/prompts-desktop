@@ -95,7 +95,7 @@ async function handleCopy() {
     // Reset after 2 seconds
     setTimeout(() => {
       copyBtn.classList.remove('copied');
-      copyText.textContent = '📋 Copy to Clipboard';
+      copyText.textContent = 'Copy to Clipboard';
     }, 2000);
   } catch (err) {
     showError('Failed to copy to clipboard');
