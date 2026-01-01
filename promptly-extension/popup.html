@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=400">
+  <title>Promptly</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>✨ Promptly</h1>
+      <p class="subtitle">Improve your AI prompts</p>
+    </header>
+
+    <div class="input-section">
+      <label for="prompt-input">Your Prompt</label>
+      <textarea 
+        id="prompt-input" 
+        placeholder="Paste your prompt here..."
+        rows="5"
+      ></textarea>
+    </div>
+
+    <div class="tone-section">
+      <label for="tone-select">Select Tone</label>
+      <select id="tone-select">
+        <option value="Professional">Professional</option>
+        <option value="Creative">Creative</option>
+        <option value="Short & Direct">Short & Direct</option>
+      </select>
+    </div>
+
+    <button id="improve-btn" class="improve-btn">
+      <span class="btn-text">✨ Improve Prompt</span>
+      <span class="btn-loading" style="display: none;">
+        <span class="spinner"></span> Processing...
+      </span>
+    </button>
+
+    <div id="error-message" class="error-message" style="display: none;"></div>
+
+    <div class="output-section" id="output-section" style="display: none;">
+      <label>Improved Prompt</label>
+      <textarea 
+        id="prompt-output" 
+        readonly 
+        rows="6"
+      ></textarea>
+      <button id="copy-btn" class="copy-btn">
+        <span id="copy-text">📋 Copy to Clipboard</span>
+      </button>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
