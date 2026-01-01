@@ -54,18 +54,14 @@
 
     const rect = input.getBoundingClientRect();
     const btnHeight = 36;
-    const btnWidth = floatingBtn.offsetWidth || 100;
 
     let top = rect.top + window.scrollY - btnHeight - 8;
-    let left = rect.right + window.scrollX - btnWidth;
+    let left = rect.left + window.scrollX;
 
     if (top < window.scrollY + 10) {
       top = rect.bottom + window.scrollY + 8;
     }
     if (left < 10) left = 10;
-    if (left + btnWidth > window.innerWidth - 10) {
-      left = window.innerWidth - btnWidth - 10;
-    }
 
     floatingBtn.style.top = top + 'px';
     floatingBtn.style.left = left + 'px';
