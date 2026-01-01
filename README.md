@@ -1,96 +1,91 @@
-# Promptly - AI Prompt Improver
+# Promptly - AI Prompt Optimizer
 
-A Chrome Extension that improves your AI prompts using OpenRouter API.
+Transform your AI prompts into professional, structured queries with one click.
+
+![Promptly](https://img.shields.io/badge/version-1.0.0-8b5cf6) ![License](https://img.shields.io/badge/license-MIT-green)
+
+## Features
+
+- **Instant Optimization** - Transform any prompt into professional format
+- **Multiple Tones** - Professional, Creative, Technical, Friendly, Concise
+- **Universal Support** - Works with ChatGPT, Claude, Gemini, and more
+- **Keyboard Shortcut** - Quick access with `Ctrl+I` / `Cmd+I`
+- **One-Click Copy** - Instantly copy improved prompts
 
 ## Project Structure
 
 ```
-prompt/
+promptly/
 ├── promptly-extension/     # Chrome Extension
 │   ├── manifest.json
-│   ├── popup.html
-│   ├── popup.css
-│   ├── popup.js
-│   └── icon*.png          # Add your icons
+│   ├── popup.html/css/js
+│   ├── content.js/css
+│   ├── about.html
+│   └── icons/
 │
 └── promptly-backend/       # Express Server
     ├── server.js
     ├── package.json
-    ├── .env.example
-    └── .env               # Create this with your API key
+    └── public/
+        ├── index.html      # Landing page
+        ├── admin.html      # Admin login
+        └── dashboard.html  # Admin dashboard
 ```
 
-## Setup Instructions
+## Quick Start
 
 ### 1. Backend Setup
 
 ```bash
 cd promptly-backend
-
-# Install dependencies
 npm install
 
-# Create .env file with your OpenRouter API key
-# Copy .env.example to .env and add your key
-cp .env.example .env
+# Create .env file
+echo "OPENROUTER_API_KEY=your_key_here" > .env
+echo "ADMIN_USERNAME=admin" >> .env
+echo "ADMIN_PASSWORD=your_password" >> .env
+echo "JWT_SECRET=your_secret" >> .env
 
-# Edit .env and replace with your actual API key
-# Get your key at: https://openrouter.ai/keys
-
-# Start the server
 npm start
 ```
 
-Server runs on http://localhost:3001
+Server runs on `http://localhost:3001`
 
-### 2. Chrome Extension Setup
+### 2. Chrome Extension
 
-1. Open Chrome and go to `chrome://extensions/`
-2. Enable "Developer mode" (toggle in top right)
-3. Click "Load unpacked"
-4. Select the `promptly-extension` folder
-5. The extension icon appears in your toolbar
-
-### 3. Add Extension Icons (Optional)
-
-Create or download icons and save as:
-- `icon16.png` (16x16 pixels)
-- `icon48.png` (48x48 pixels)
-- `icon128.png` (128x128 pixels)
-
-Place them in the `promptly-extension` folder.
-
-## Usage
-
-1. Make sure the backend server is running
-2. Click the Promptly extension icon
-3. Paste your prompt
-4. Select a tone (Professional, Creative, Short & Direct)
-5. Click "Improve Prompt"
-6. Copy the improved prompt to clipboard
-
-## API Endpoint
-
-**POST /improve-prompt**
-
-Request:
-```json
-{
-  "prompt": "your prompt text",
-  "tone": "Professional"
-}
-```
-
-Response:
-```json
-{
-  "improvedPrompt": "improved prompt text"
-}
-```
+1. Go to `chrome://extensions/`
+2. Enable **Developer mode**
+3. Click **Load unpacked**
+4. Select `promptly-extension` folder
 
 ## Environment Variables
 
 | Variable | Description | Required |
 |----------|-------------|----------|
-| OPENROUTER_API_KEY | Your OpenRouter API key | Yes |
-| PORT | Server port (default: 3001) | No |
+| `OPENROUTER_API_KEY` | OpenRouter API key | Yes |
+| `ADMIN_USERNAME` | Admin login username | Yes |
+| `ADMIN_PASSWORD` | Admin login password | Yes |
+| `JWT_SECRET` | JWT signing secret | Yes |
+| `PORT` | Server port (default: 3001) | No |
+
+## API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/improve-prompt` | Improve a prompt |
+| GET | `/api/urls` | Get public URL directory |
+| POST | `/api/admin/login` | Admin authentication |
+| GET | `/api/admin/urls` | Get URLs (authenticated) |
+| POST | `/api/admin/urls` | Add URL (authenticated) |
+| DELETE | `/api/admin/urls/:id` | Delete URL (authenticated) |
+
+## Tech Stack
+
+- **Frontend**: Vanilla JS, CSS3 (Inter font, gradients)
+- **Backend**: Node.js, Express
+- **AI**: OpenRouter API (GPT-4, Claude)
+- **Auth**: JWT
+
+## License
+
+MIT
