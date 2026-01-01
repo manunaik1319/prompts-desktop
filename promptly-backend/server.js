@@ -3,6 +3,8 @@
 
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
+const crypto = require('crypto');
 require('dotenv').config();
 
 const app = express();
@@ -11,6 +13,16 @@ const PORT = process.env.PORT || 3001;
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Admin credentials (in production, use environment variables and proper hashing)
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'promptly123';
+const JWT_SECRET = process.env.JWT_SECRET || 'promptly-secret-key-change-in-production';
+
+// In-memory storage for URLs (in production, use a database)
+let urls = [];
+let tokens = new Set();
 
 // OpenRouter API configuration
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
@@ -155,6 +167,76 @@ app.post('/improve-prompt', async (req, res) => {
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
+});
+
+// Generate simple token
+function generateToken() {
+  return crypto.randomBytes(32).toString('hex');
+}
+
+// Auth middleware
+function authMiddleware(req, res, next) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  
+  const token = authHeader.split(' ')[1];
+  if (!tokens.has(token)) {
+    return res.status(401).json({ error: 'Invalid token' });
+  }
+  
+  next();
+}
+
+// Admin login endpoint
+app.post('/api/admin/login', (req, res) => {
+  const { username, password } = req.body;
+  
+  if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+    const token = generateToken();
+    tokens.add(token);
+    res.json({ token });
+  } else {
+    res.status(401).json({ error: 'Invalid credentials' });
+  }
+});
+
+// Get all URLs
+app.get('/api/admin/urls', authMiddleware, (req, res) => {
+  res.json({ urls });
+});
+
+// Add new URL
+app.post('/api/admin/urls', authMiddleware, (req, res) => {
+  const { url, name } = req.body;
+  
+  if (!url) {
+    return res.status(400).json({ error: 'URL is required' });
+  }
+  
+  const newUrl = {
+    id: crypto.randomBytes(8).toString('hex'),
+    url,
+    name: name || '',
+    createdAt: new Date().toISOString()
+  };
+  
+  urls.push(newUrl);
+  res.json({ url: newUrl });
+});
+
+// Delete URL
+app.delete('/api/admin/urls/:id', authMiddleware, (req, res) => {
+  const { id } = req.params;
+  const index = urls.findIndex(u => u.id === id);
+  
+  if (index === -1) {
+    return res.status(404).json({ error: 'URL not found' });
+  }
+  
+  urls.splice(index, 1);
+  res.json({ success: true });
 });
 
 // Start server
