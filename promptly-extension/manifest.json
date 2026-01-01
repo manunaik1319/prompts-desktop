@@ -3,8 +3,30 @@
   "name": "Promptly",
   "version": "1.0.0",
   "description": "Improve your AI prompts with one click",
+  "permissions": ["activeTab"],
+  "host_permissions": [
+    "https://chat.openai.com/*",
+    "https://chatgpt.com/*",
+    "https://claude.ai/*",
+    "https://gemini.google.com/*",
+    "https://www.bing.com/chat/*",
+    "https://copilot.microsoft.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://chat.openai.com/*",
+        "https://chatgpt.com/*",
+        "https://claude.ai/*",
+        "https://gemini.google.com/*",
+        "https://www.bing.com/chat/*",
+        "https://copilot.microsoft.com/*"
+      ],
+      "js": ["content.js"],
+      "css": ["content.css"]
+    }
+  ],
   "action": {
     "default_popup": "popup.html"
-  },
-  "permissions": []
+  }
 }
