@@ -138,31 +138,69 @@
     <a href="#" class="cta-btn">Get the Extension</a>
   </section>
 
-  <section class="features" id="features">
-    <h2>Why Choose Promptly?</h2>
-    <div class="features-grid">
-      <div class="feature-card">
-        <div class="icon">🚀</div>
-        <h3>Instant Optimization</h3>
-        <p>Transform any prompt into a professional, structured format with just one click.</p>
+    <section class="features" id="features">
+      <h2>Why Choose Promptly?</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="icon">🚀</div>
+          <h3>Instant Optimization</h3>
+          <p>Transform any prompt into a professional, structured format with just one click.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">🎯</div>
+          <h3>Multiple Tones</h3>
+          <p>Choose from Professional, Casual, Technical, or Creative tones to match your needs.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">📋</div>
+          <h3>Easy Copy</h3>
+          <p>One-click copy to clipboard. Ready to paste into any AI tool instantly.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">⚡</div>
+          <h3>Keyboard Shortcut</h3>
+          <p>Press Ctrl+I anytime to instantly access Promptly from any webpage.</p>
+        </div>
       </div>
-      <div class="feature-card">
-        <div class="icon">🎯</div>
-        <h3>Multiple Tones</h3>
-        <p>Choose from Professional, Casual, Technical, or Creative tones to match your needs.</p>
+    </section>
+
+    <section id="directory" style="background: white; padding: 80px 50px; text-align: center; border-top: 1px solid #eee;">
+      <h2 style="font-size: 36px; margin-bottom: 50px;">Public Prompt Directories</h2>
+      <div id="url-list" class="features-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+        <p style="grid-column: 1/-1; color: #666;">Loading directories...</p>
       </div>
-      <div class="feature-card">
-        <div class="icon">📋</div>
-        <h3>Easy Copy</h3>
-        <p>One-click copy to clipboard. Ready to paste into any AI tool instantly.</p>
-      </div>
-      <div class="feature-card">
-        <div class="icon">⚡</div>
-        <h3>Keyboard Shortcut</h3>
-        <p>Press Ctrl+I anytime to instantly access Promptly from any webpage.</p>
-      </div>
-    </div>
-  </section>
+    </section>
+
+    <script>
+      async function loadUrls() {
+        const urlList = document.getElementById('url-list');
+        try {
+          const response = await fetch('/api/urls');
+          const data = await response.json();
+          
+          if (!data.urls || data.urls.length === 0) {
+            urlList.innerHTML = '<p style="grid-column: 1/-1; color: #666;">No directories added yet. Check back soon!</p>';
+            return;
+          }
+          
+          urlList.innerHTML = data.urls.map(item => `
+            <div class="feature-card" style="text-align: left; padding: 25px;">
+              <h3 style="margin-bottom: 10px;">${item.name || 'Untitled Directory'}</h3>
+              <p style="margin-bottom: 20px; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                ${item.url}
+              </p>
+              <a href="${item.url}" target="_blank" style="color: #667eea; text-decoration: none; font-weight: 600;">Visit Site &rarr;</a>
+            </div>
+          `).join('');
+        } catch (error) {
+          console.error('Error loading URLs:', error);
+          urlList.innerHTML = '<p style="grid-column: 1/-1; color: #ff4d4d;">Failed to load directories.</p>';
+        }
+      }
+      
+      window.addEventListener('DOMContentLoaded', loadUrls);
+    </script>
+
 
   <section id="about" style="background: #f8f9fa; padding: 80px 50px; text-align: center;">
     <h2 style="font-size: 36px; margin-bottom: 20px;">About Promptly</h2>

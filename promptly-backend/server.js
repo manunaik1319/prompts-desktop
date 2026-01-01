@@ -202,6 +202,11 @@ app.post('/api/admin/login', (req, res) => {
   }
 });
 
+// Public endpoint for URLs
+app.get('/api/urls', (req, res) => {
+  res.json({ urls });
+});
+
 // Get all URLs
 app.get('/api/admin/urls', authMiddleware, (req, res) => {
   res.json({ urls });
