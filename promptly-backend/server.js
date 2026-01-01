@@ -1,5 +1,5 @@
 // Promptly Backend Server
-// Express server that proxies requests to OpenRouter API
+// Express server that proxies requests to AI/ML API
 
 const express = require('express');
 const cors = require('cors');
@@ -24,10 +24,10 @@ const JWT_SECRET = process.env.JWT_SECRET || 'promptly-secret-key-change-in-prod
 let urls = [];
 let tokens = new Set();
 
-// OpenRouter API configuration
-const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
-const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY?.trim();
-console.log('API Key loaded:', OPENROUTER_API_KEY ? `${OPENROUTER_API_KEY.substring(0, 10)}...` : 'NOT FOUND');
+// AI/ML API configuration
+const AIML_API_URL = 'https://api.aimlapi.com/v1/chat/completions';
+const AIML_API_KEY = process.env.AIML_API_KEY?.trim();
+console.log('API Key loaded:', AIML_API_KEY ? `${AIML_API_KEY.substring(0, 10)}...` : 'NOT FOUND');
 
 // System prompt for the AI
 const SYSTEM_PROMPT = `You are an expert Prompt Optimiser. Your job is to take a user's prompt and rewrite it to be more effective.
@@ -69,25 +69,23 @@ app.post('/improve-prompt', async (req, res) => {
     }
 
     // Check for API key
-    if (!OPENROUTER_API_KEY) {
-      console.error('OPENROUTER_API_KEY is not set in environment variables');
+    if (!AIML_API_KEY) {
+      console.error('AIML_API_KEY is not set in environment variables');
       return res.status(500).json({ error: 'Server configuration error: API key not set' });
     }
 
     // Prepare the user message with tone context
     const userMessage = `Tone: ${tone}\n\nPrompt to improve:\n${prompt.trim()}`;
 
-    // Call OpenRouter API
-    const response = await fetch(OPENROUTER_API_URL, {
+    // Call AI/ML API
+    const response = await fetch(AIML_API_URL, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-        'Content-Type': 'application/json',
-        'HTTP-Referer': 'http://localhost:3001',
-        'X-Title': 'Promptly'
+        'Authorization': `Bearer ${AIML_API_KEY}`,
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'openai/gpt-4o-mini',
+        model: 'gpt-4o-mini',
         messages: [
           { role: 'system', content: SYSTEM_PROMPT },
           { role: 'user', content: userMessage }
@@ -101,7 +99,7 @@ app.post('/improve-prompt', async (req, res) => {
 
     // Check for API errors
     if (!response.ok) {
-      console.error('OpenRouter API error:', data);
+      console.error('AI/ML API error:', data);
       return res.status(response.status).json({ 
         error: data.error?.message || 'Failed to improve prompt' 
       });
@@ -206,7 +204,7 @@ app.delete('/api/admin/urls/:id', authMiddleware, (req, res) => {
 // Start server
 app.listen(PORT, () => {
   console.log(`Promptly backend running on http://localhost:${PORT}`);
-  if (!OPENROUTER_API_KEY) {
-    console.warn('WARNING: OPENROUTER_API_KEY is not set. API calls will fail.');
+  if (!AIML_API_KEY) {
+    console.warn('WARNING: AIML_API_KEY is not set. API calls will fail.');
   }
 });
