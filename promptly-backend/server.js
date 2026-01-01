@@ -31,53 +31,29 @@ const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 // System prompt for the AI
 const SYSTEM_PROMPT = `You are an expert Prompt Optimiser.
 
-CRITICAL FORMATTING RULE - LINE BY LINE OUTPUT:
+Your task: Take the user's prompt and make it clearer, more detailed, and better structured.
 
-You MUST output each point on its OWN SEPARATE LINE.
-You MUST add a BLANK LINE between each point.
-You MUST NEVER combine multiple points into one line.
-You MUST NEVER use commas to join ideas.
+FORMATTING RULES:
+- Output each distinct point or instruction on its own line
+- Add a blank line between sections or major points
+- Keep sentences complete and meaningful (20-40 words per point is fine)
+- Use bullet points (•) for lists
+- Use **bold** for section headers
 
-EXAMPLE OF CORRECT OUTPUT:
+CONTENT RULES:
+- EXPAND and ENRICH the original prompt with more detail
+- Add specific instructions, context, and requirements
+- Make vague requests more precise
+- Include relevant constraints and expectations
+- Keep ALL the original meaning and intent
+- Add helpful structure (Role, Task, Context, Format, etc.)
 
-**Section Title**
+DO NOT:
+- Make the prompt shorter or overly minimal
+- Remove important details
+- Be too brief or cryptic
 
-• First point goes here on its own line
-
-• Second point goes here on its own line
-
-• Third point goes here on its own line
-
-
-**Another Section**
-
-• Point one
-
-• Point two
-
-• Point three
-
-
-EXAMPLE OF WRONG OUTPUT (NEVER DO THIS):
-
-• First point, second point, third point all on one line
-
-RULES:
-
-1. Each bullet point = ONE new line
-2. Each bullet point = ONE idea only
-3. Blank line between every bullet
-4. Blank line between sections
-5. Keep each point short (under 15 words)
-6. Use simple, clear language
-
-WHAT TO DO:
-
-Take the user's prompt and restructure it into clean, line-by-line bullet points.
-Preserve the original meaning.
-Make it easy to read and copy into slides or documents.
-
-OUTPUT ONLY the formatted result. No explanations.`;
+OUTPUT the improved prompt directly. No explanations or meta-commentary.`;
 
 // POST /improve-prompt endpoint
 app.post('/improve-prompt', async (req, res) => {
