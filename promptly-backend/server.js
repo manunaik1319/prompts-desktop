@@ -24,10 +24,10 @@ const JWT_SECRET = process.env.JWT_SECRET || 'promptly-secret-key-change-in-prod
 let urls = [];
 let tokens = new Set();
 
-// AI/ML API configuration
-const AIML_API_URL = 'https://api.aimlapi.com/v1/chat/completions';
-const AIML_API_KEY = process.env.AIML_API_KEY?.trim();
-console.log('API Key loaded:', AIML_API_KEY ? `${AIML_API_KEY.substring(0, 10)}...` : 'NOT FOUND');
+// Gemini API configuration
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY?.trim();
+const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+console.log('Gemini API Key loaded:', GEMINI_API_KEY ? `${GEMINI_API_KEY.substring(0, 10)}...` : 'NOT FOUND');
 
 // System prompt for the AI
 const SYSTEM_PROMPT = `You are an expert Prompt Optimiser. Your job is to take a user's prompt and rewrite it to be more effective.
@@ -68,45 +68,47 @@ app.post('/improve-prompt', async (req, res) => {
       return res.status(400).json({ error: 'Tone is required' });
     }
 
-    // Check for API key
-    if (!AIML_API_KEY) {
-      console.error('AIML_API_KEY is not set in environment variables');
-      return res.status(500).json({ error: 'Server configuration error: API key not set' });
-    }
+      // Check for API key
+      if (!GEMINI_API_KEY) {
+        console.error('GEMINI_API_KEY is not set in environment variables');
+        return res.status(500).json({ error: 'Server configuration error: API key not set' });
+      }
 
-    // Prepare the user message with tone context
-    const userMessage = `Tone: ${tone}\n\nPrompt to improve:\n${prompt.trim()}`;
+      // Prepare the user message with tone context
+      const userMessage = `Tone: ${tone}\n\nPrompt to improve:\n${prompt.trim()}`;
 
-    // Call AI/ML API
-    const response = await fetch(AIML_API_URL, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${AIML_API_KEY}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
-          { role: 'system', content: SYSTEM_PROMPT },
-          { role: 'user', content: userMessage }
-        ],
-        max_tokens: 2048,
-        temperature: 0.7
-      })
-    });
-
-    const data = await response.json();
-
-    // Check for API errors
-    if (!response.ok) {
-      console.error('AI/ML API error:', data);
-      return res.status(response.status).json({ 
-        error: data.error?.message || 'Failed to improve prompt' 
+      // Call Gemini API
+      const response = await fetch(GEMINI_API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              role: 'user',
+              parts: [{ text: `${SYSTEM_PROMPT}\n\n${userMessage}` }]
+            }
+          ],
+          generationConfig: {
+            maxOutputTokens: 2048,
+            temperature: 0.7
+          }
+        })
       });
-    }
 
-    // Extract the improved prompt from the response
-    const improvedPrompt = data.choices?.[0]?.message?.content;
+      const data = await response.json();
+
+      // Check for API errors
+      if (!response.ok) {
+        console.error('Gemini API error:', data);
+        return res.status(response.status).json({ 
+          error: data.error?.message || 'Failed to improve prompt' 
+        });
+      }
+
+      // Extract the improved prompt from the response
+      const improvedPrompt = data.candidates?.[0]?.content?.parts?.[0]?.text;
 
     if (!improvedPrompt) {
       return res.status(500).json({ error: 'No response from AI' });
@@ -204,7 +206,7 @@ app.delete('/api/admin/urls/:id', authMiddleware, (req, res) => {
 // Start server
 app.listen(PORT, () => {
   console.log(`Promptly backend running on http://localhost:${PORT}`);
-  if (!AIML_API_KEY) {
-    console.warn('WARNING: AIML_API_KEY is not set. API calls will fail.');
+  if (!GEMINI_API_KEY) {
+    console.warn('WARNING: GEMINI_API_KEY is not set. API calls will fail.');
   }
 });
