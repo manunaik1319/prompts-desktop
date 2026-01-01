@@ -45,7 +45,11 @@ label {
 .input-section,
 .tone-section,
 .output-section {
-  margin-bottom: 16px;
+  margin-bottom: 12px;
+}
+
+.tone-section {
+  margin-bottom: 8px;
 }
 
 textarea {
